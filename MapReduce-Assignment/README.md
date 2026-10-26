@@ -47,6 +47,22 @@ Use a separate output directory. Use `--pattern 'book_*.txt'` if restricting fil
 
 For a valid external expected file, use `--expected path/to/expected.txt`. Strict validation fails on the supplied reference because it contains duplicate `reduce` entries. Use `validate.py` to inspect the supplied reference without losing information.
 
+## Desktop GUI — MapReduce Studio
+
+Launch from the repository root:
+
+```bash
+python MapReduce-Assignment/gui.py
+```
+
+On Windows, double-click `MapReduce-Assignment/Run-GUI.bat` after extracting the complete repository. Requires Python 3.10+ with Tkinter (included in standard python.org Windows installations). On Linux, install your distribution's Python Tk package if missing. No pip packages are required.
+
+The dark desktop dashboard provides input/output folder pickers, a responsive background pipeline, summary cards, searchable and sortable word counts, reducer filters, mapper timing records, CSV export, and an output-folder shortcut. Data is processed locally with the existing engine. Generated GUI results default to `gui-output/`, leaving the committed sample results available. All CSV exports contain all words; filters only affect the table.
+
+Enable **Demonstrate concurrency** to assign a separate thread per split (up to 32 files in the GUI). Disable it to use the selected worker count. Progress is indeterminate during execution; results and mapper records appear after completion. Before overwriting generated files, the GUI asks for confirmation. Empty inputs produce empty output parts. The run summary distinguishes successful execution from reference-file validation; use `validate.py` for the reference audit.
+
+Verification: the 11 existing tests passed after this addition. GUI worker smoke checks executed the supplied dataset, confirmed 235 tokens / 182 unique words and two reducer files, verified concurrency evidence, and checked error delivery for a missing input directory. The GUI module compiles and imports. Visual window verification was unavailable in the build environment because it has no display server.
+
 ## Actual execution results
 Executed on 26 October 2026:
 
@@ -80,6 +96,8 @@ The first test execution revealed duplicate keys in the provided expected file. 
 See `output/validation.json` for all 40 differences and `output/tests.txt` for the actual successful test log. This discrepancy should be mentioned to the professor; the submission does not claim the provided expected output matches.
 
 ## Files
+- `gui.py`: Tkinter desktop dashboard.
+- `Run-GUI.bat`: Windows GUI launcher.
 - `mapreduce.py`: engine and command-line interface.
 - `validate.py`: independent count and expected-result audit.
 - `tests/test_mapreduce.py`: 11 automated tests with temporary sample files.

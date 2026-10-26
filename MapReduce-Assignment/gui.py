@@ -13,15 +13,16 @@ from tkinter import filedialog, messagebox, ttk
 from mapreduce import input_splits, partition, run
 
 BASE = Path(__file__).resolve().parent
-BG, PANEL, TEXT, MUTED, ACCENT = '#0b1220', '#141f32', '#eef4ff', '#93a6c3', '#56ddba'
+BG, PANEL, TEXT, MUTED, ACCENT = '#f3f5fa', '#ffffff', '#172338', '#78869c', '#6554e8'
+NAV = '#151d32'
 
 
 class Dashboard(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title('MapReduce Studio | Word Count')
-        self.geometry('1180x800')
-        self.minsize(960, 700)
+        self.geometry(f'{min(1440, self.winfo_screenwidth()-60)}x{min(900, self.winfo_screenheight()-90)}')
+        self.minsize(1100, 700)
         self.configure(bg=BG)
         self.events = queue.Queue()
         self.counts = {}
@@ -45,100 +46,185 @@ class Dashboard(tk.Tk):
     def setup_style(self):
         style = ttk.Style(self)
         style.theme_use('clam')
-        style.configure('.', font=('Segoe UI', 10), background=PANEL, foreground=TEXT)
+        style.configure('.', font=('Segoe UI', 10), background=BG, foreground=TEXT)
         style.configure('TFrame', background=BG)
         style.configure('Card.TFrame', background=PANEL)
         style.configure('TLabel', background=BG, foreground=TEXT)
         style.configure('Muted.TLabel', foreground=MUTED)
-        style.configure('TEntry', fieldbackground='#1d2b42', foreground=TEXT, padding=8)
-        style.configure('TCombobox', fieldbackground='#1d2b42', foreground=TEXT, padding=5)
-        style.map('TCombobox', fieldbackground=[('readonly', '#1d2b42')], foreground=[('readonly', TEXT)])
-        style.configure('TButton', background='#253651', foreground=TEXT, padding=(14, 9), borderwidth=0)
-        style.map('TButton', background=[('active', '#354b6c')])
-        style.configure('Primary.TButton', background=ACCENT, foreground=BG, font=('Segoe UI', 11, 'bold'))
-        style.map('Primary.TButton', background=[('active', '#8cebd1'), ('disabled', '#354b6c')])
-        style.configure('TCheckbutton', background=BG, foreground=TEXT)
-        style.map('TCheckbutton', background=[('active', BG)])
+        style.configure('TEntry', fieldbackground=PANEL, foreground=TEXT, padding=8, bordercolor='#dde3ee')
+        style.configure('TCombobox', fieldbackground=PANEL, foreground=TEXT, padding=6, bordercolor='#dde3ee')
+        style.map('TCombobox', fieldbackground=[('readonly', PANEL)], foreground=[('readonly', TEXT)])
+        style.configure('TSpinbox', fieldbackground=PANEL, foreground=TEXT, padding=5)
+        style.configure('TButton', background='#e9edf6', foreground=TEXT, padding=(14, 9), borderwidth=0)
+        style.map('TButton', background=[('active', '#dce2f1')])
+        style.configure('Primary.TButton', background=ACCENT, foreground='white', font=('Segoe UI', 11, 'bold'), padding=(22, 13))
+        style.map('Primary.TButton', background=[('active', '#5141cc'), ('disabled', '#b4addb')])
+        style.configure('TCheckbutton', background=NAV, foreground='#d2daeb')
+        style.map('TCheckbutton', background=[('active', NAV)], foreground=[('disabled', '#8490a9')])
         style.configure('Treeview', background=PANEL, fieldbackground=PANEL, foreground=TEXT,
-                        rowheight=30, borderwidth=0)
-        style.configure('Treeview.Heading', background='#20304a', foreground=MUTED,
-                        font=('Segoe UI', 10, 'bold'), padding=9)
-        style.map('Treeview', background=[('selected', '#275f68')])
+                        rowheight=36, borderwidth=0, font=('Segoe UI', 10))
+        style.configure('Treeview.Heading', background='#edf0f7', foreground='#77849a',
+                        font=('Segoe UI', 9, 'bold'), padding=12, relief='flat')
+        style.map('Treeview', background=[('selected', '#e8e3ff')], foreground=[('selected', '#4d3bbb')])
         style.configure('TNotebook', background=BG, borderwidth=0)
-        style.configure('TNotebook.Tab', padding=(18, 10), background=PANEL, foreground=MUTED)
-        style.map('TNotebook.Tab', background=[('selected', '#253651')], foreground=[('selected', TEXT)])
-        style.configure('Horizontal.TProgressbar', background=ACCENT, troughcolor=PANEL, borderwidth=0)
+        style.configure('TNotebook.Tab', padding=(20, 12), background=BG, foreground=MUTED, font=('Segoe UI', 10, 'bold'))
+        style.map('TNotebook.Tab', background=[('selected', PANEL)], foreground=[('selected', ACCENT)])
+        style.configure('Horizontal.TProgressbar', background=ACCENT, troughcolor='#e4e8f2', borderwidth=0, thickness=3)
+
+    @staticmethod
+    def label(parent, text, size=10, color=TEXT, bold=False, bg=PANEL, **kw):
+        widget = tk.Label(parent, text=text, bg=bg, fg=color,
+                          font=('Segoe UI', size, 'bold' if bold else 'normal'), **kw)
+        return widget
 
     def build(self):
-        page = ttk.Frame(self, padding=26)
-        page.pack(fill='both', expand=True)
-        head = ttk.Frame(page)
-        head.pack(fill='x')
-        ttk.Label(head, text='MAPREDUCE / STUDIO', foreground=ACCENT,
-                  font=('Segoe UI', 10, 'bold')).pack(anchor='w')
-        ttk.Label(head, text='Small splits. Clear results.', font=('Segoe UI', 27, 'bold')).pack(anchor='w', pady=(5, 0))
-        ttk.Label(head, text='Concurrent word counting · 2 deterministic reducers · Python standard library',
-                  style='Muted.TLabel').pack(anchor='w', pady=(5, 18))
-        config = ttk.Frame(page)
-        config.pack(fill='x')
-        config.columnconfigure(1, weight=1)
+        sidebar = tk.Frame(self, bg=NAV, width=280)
+        sidebar.pack(side='left', fill='y')
+        sidebar.pack_propagate(False)
+        inner = tk.Frame(sidebar, bg=NAV)
+        inner.pack(fill='both', expand=True, padx=24, pady=28)
+        self.label(inner, 'M / R', 24, '#b4a6ff', True, NAV).pack(anchor='w')
+        self.label(inner, 'MapReduce Studio', 17, 'white', True, NAV).pack(anchor='w', pady=(10, 3))
+        self.label(inner, 'WORD COUNT WORKSPACE', 8, '#8592ad', True, NAV).pack(anchor='w')
+        tk.Frame(inner, bg='#30394f', height=1).pack(fill='x', pady=25)
+        self.label(inner, 'PIPELINE CONFIGURATION', 9, '#a5b0c7', True, NAV).pack(anchor='w', pady=(0, 18))
         self.config_controls = []
-        for row, (label, variable) in enumerate([('Input folder', self.source), ('Output folder', self.destination)]):
-            ttk.Label(config, text=label, width=14).grid(row=row, column=0, sticky='w', pady=4)
-            entry = ttk.Entry(config, textvariable=variable)
-            entry.grid(row=row, column=1, sticky='ew', padx=(0, 10), pady=4)
-            button = ttk.Button(config, text='Browse…', command=lambda v=variable: self.browse(v))
-            button.grid(row=row, column=2)
+        for title, variable, hint in [('Input directory', self.source, 'One text file = one mapper split'),
+                                      ('Save results to', self.destination, 'Two reducer files + execution trace')]:
+            self.label(inner, title, 10, '#e3e8f4', True, NAV).pack(anchor='w')
+            entry = tk.Entry(inner, textvariable=variable, bg='#232d45', fg='white', insertbackground='white',
+                             relief='flat', font=('Segoe UI', 9), disabledbackground='#232d45', disabledforeground='#8490a9')
+            entry.pack(fill='x', ipady=10, pady=(8, 7))
+            button = ttk.Button(inner, text='Choose folder', command=lambda v=variable: self.browse(v))
+            button.pack(fill='x')
+            self.label(inner, hint, 8, '#8492ad', bg=NAV).pack(anchor='w', pady=(7, 20))
             self.config_controls.extend([entry, button])
-        actions = ttk.Frame(page)
-        actions.pack(fill='x', pady=(12, 16))
-        self.run_button = ttk.Button(actions, text='▶  Run pipeline', style='Primary.TButton', command=self.start)
-        self.run_button.pack(side='left')
-        ttk.Label(actions, text='Workers').pack(side='left', padx=(20, 6))
-        workers = ttk.Spinbox(actions, from_=1, to=32, textvariable=self.workers, width=4)
-        workers.pack(side='left')
-        demo = ttk.Checkbutton(actions, text='Demonstrate concurrency', variable=self.demo)
-        demo.pack(side='left', padx=12)
+        self.label(inner, 'Worker threads', 10, '#e3e8f4', True, NAV).pack(anchor='w')
+        workers = ttk.Spinbox(inner, from_=1, to=32, textvariable=self.workers, width=5)
+        workers.pack(fill='x', pady=(8, 10))
+        demo = ttk.Checkbutton(inner, text='Concurrency demonstration', variable=self.demo)
+        demo.pack(anchor='w')
+        self.label(inner, 'Demo: one thread per file (up to 32).', 8, '#8492ad', bg=NAV).pack(anchor='w', pady=(8, 0))
         self.config_controls.extend([workers, demo])
-        ttk.Button(actions, text='Open output folder', command=self.open_output).pack(side='right')
+        footer = tk.Frame(inner, bg=NAV)
+        footer.pack(side='bottom', fill='x', pady=(16, 0))
+        self.label(footer, 'ibrahim mohamed ahmed', 10, '#dbe2f1', True, NAV).pack(anchor='w')
+        self.label(footer, '231006724  /  Big Data Analytics', 8, '#8492ad', bg=NAV).pack(anchor='w', pady=(4, 0))
+
+        page = ttk.Frame(self, padding=(28, 24))
+        page.pack(fill='both', expand=True)
+        top = ttk.Frame(page)
+        top.pack(fill='x', pady=(0, 18))
+        titles = ttk.Frame(top)
+        titles.pack(side='left')
+        ttk.Label(titles, text='WORKSPACE  /  WORD COUNT', foreground=MUTED, font=('Segoe UI', 9, 'bold')).pack(anchor='w')
+        ttk.Label(titles, text='Pipeline overview', font=('Segoe UI', 25, 'bold')).pack(anchor='w', pady=(7, 4))
+        ttk.Label(titles, text='Turn text files into clear, reproducible results.', style='Muted.TLabel').pack(anchor='w')
+        self.run_button = ttk.Button(top, text='Run pipeline  →', style='Primary.TButton', command=self.start)
+        self.run_button.pack(side='right', anchor='center')
+
         cards = ttk.Frame(page)
-        cards.pack(fill='x', pady=(0, 16))
-        for index, title in enumerate(['INPUT SPLITS', 'TOTAL WORDS', 'UNIQUE WORDS', 'REDUCERS']):
-            cards.columnconfigure(index, weight=1)
-            card = ttk.Frame(cards, style='Card.TFrame', padding=15)
-            card.grid(row=0, column=index, sticky='ew', padx=(0 if index == 0 else 10, 0))
-            tk.Label(card, text=title, bg=PANEL, fg=MUTED, font=('Segoe UI', 9, 'bold')).pack(anchor='w')
-            tk.Label(card, textvariable=self.stats[index], bg=PANEL, fg=ACCENT,
-                     font=('Segoe UI', 25, 'bold')).pack(anchor='w', pady=(5, 0))
+        cards.pack(fill='x', pady=(0, 18))
+        for index, (title, hint, color) in enumerate([
+                ('INPUT SPLITS', 'Independent text files', ACCENT),
+                ('TOTAL WORDS', 'All word occurrences', '#168f85'),
+                ('UNIQUE WORDS', 'Distinct normalized keys', '#c47b26'),
+                ('REDUCERS', 'Deterministic partitions', '#4478cd')]):
+            cards.columnconfigure(index, weight=1, uniform='metrics')
+            card = tk.Frame(cards, bg=PANEL, highlightbackground='#e3e7f0', highlightthickness=1)
+            card.grid(row=0, column=index, sticky='nsew', padx=(0 if index == 0 else 12, 0))
+            inside = tk.Frame(card, bg=PANEL)
+            inside.pack(fill='both', expand=True, padx=17, pady=15)
+            self.label(inside, title, 8, MUTED, True).pack(anchor='w')
+            tk.Label(inside, textvariable=self.stats[index], bg=PANEL, fg=color,
+                     font=('Segoe UI', 27, 'bold')).pack(anchor='w', pady=(6, 1))
+            self.label(inside, hint, 8, MUTED).pack(anchor='w')
+
+        phases = tk.Frame(page, bg='#eae6fc')
+        phases.pack(fill='x', pady=(0, 18))
+        for i, text in enumerate(['01  Split', '02  Map', '03  Execute', '04  Partition', '05  Reduce']):
+            phases.columnconfigure(i, weight=1)
+            self.label(phases, text, 9, '#6556a5', True, '#eae6fc').grid(row=0, column=i, pady=12)
+
         self.notebook = ttk.Notebook(page)
         self.notebook.pack(fill='both', expand=True)
-        results, traces, activity = [ttk.Frame(self.notebook, padding=12) for _ in range(3)]
-        for frame, title in [(results, 'Word counts'), (traces, 'Mapper execution'), (activity, 'Run summary')]:
+        overview, results, traces, activity = [ttk.Frame(self.notebook, padding=(0, 14)) for _ in range(4)]
+        for frame, title in [(overview, 'Overview'), (results, 'Word counts'), (traces, 'Mapper activity'), (activity, 'Execution log')]:
             self.notebook.add(frame, text=title)
+        overview.columnconfigure(0, weight=3)
+        overview.columnconfigure(1, weight=2)
+        overview.rowconfigure(0, weight=1)
+        self.bar_canvas = tk.Canvas(overview, bg=PANEL, highlightthickness=1, highlightbackground='#e3e7f0')
+        self.bar_canvas.grid(row=0, column=0, sticky='nsew', padx=(0, 14))
+        self.reducer_canvas = tk.Canvas(overview, bg=PANEL, highlightthickness=1, highlightbackground='#e3e7f0')
+        self.reducer_canvas.grid(row=0, column=1, sticky='nsew')
+        self.bar_canvas.bind('<Configure>', lambda _: self.draw_charts())
+        self.reducer_canvas.bind('<Configure>', lambda _: self.draw_charts())
+
         filters = ttk.Frame(results)
-        filters.pack(fill='x', pady=(0, 10))
-        ttk.Label(filters, text='Find a word').pack(side='left', padx=(0, 8))
-        ttk.Entry(filters, textvariable=self.search, width=22).pack(side='left')
-        for var, options in [(self.reducer, ['All reducers', 'Reducer 0', 'Reducer 1']),
-                             (self.order, ['Count: high to low', 'Word: A to Z'])]:
-            box = ttk.Combobox(filters, textvariable=var, values=options, state='readonly', width=20)
-            box.pack(side='left', padx=(10, 0))
+        filters.pack(fill='x', pady=(0, 12))
+        ttk.Entry(filters, textvariable=self.search, width=19).pack(side='left')
+        self.search.set('')
+        for var, options, width in [(self.reducer, ['All reducers', 'Reducer 0', 'Reducer 1'], 14),
+                                   (self.order, ['Count: high to low', 'Word: A to Z'], 18)]:
+            box = ttk.Combobox(filters, textvariable=var, values=options, state='readonly', width=width)
+            box.pack(side='left', padx=(8, 0))
             box.bind('<<ComboboxSelected>>', lambda _: self.refresh_results())
         ttk.Button(filters, text='Export CSV', command=self.export).pack(side='right')
-        self.words = self.table(results, [('word', 'WORD', 420), ('count', 'COUNT', 130), ('reducer', 'REDUCER', 130)])
-        self.traces = self.table(traces, [('split', 'INPUT SPLIT', 220), ('thread', 'THREAD', 140),
-                                         ('tokens', 'WORDS', 80), ('pairs', 'COMBINED PAIRS', 130),
-                                         ('start', 'START (ms)', 110), ('duration', 'DURATION (ms)', 130)])
+        ttk.Label(results, text='Search by word • Filters affect this table; CSV includes every word.', style='Muted.TLabel').pack(anchor='w', pady=(0, 10))
+        self.words = self.table(results, [('word', 'WORD', 300), ('count', 'COUNT', 110), ('reducer', 'PARTITION', 130)])
+        self.traces = self.table(traces, [('split', 'INPUT SPLIT', 140), ('thread', 'THREAD', 100),
+                                         ('tokens', 'WORDS', 70), ('pairs', 'LOCAL PAIRS', 95),
+                                         ('start', 'START (ms)', 95), ('duration', 'DURATION (ms)', 115)])
         self.log = tk.Text(activity, bg=PANEL, fg=TEXT, relief='flat', wrap='word',
-                           font=('Consolas', 11), padx=15, pady=15, state='disabled')
+                           font=('Consolas', 10), padx=20, pady=20, state='disabled')
         self.log.pack(fill='both', expand=True)
-        self.write_log('Ready. No pipeline has been executed in this window yet.\n\n'
+        self.write_log('READY TO RUN\n\nChoose the input and output folders in the left panel, then click Run pipeline.\n\n'
                        'The expected_word_count.txt reference is excluded from input.\n'
-                       'Demo mode uses one thread per split; workers apply in normal mode.\n'
-                       'Use the CLI validation report to review supplied-reference discrepancies.')
+                       'Demo mode uses one thread per file; worker count applies in normal mode.')
+        bottom = ttk.Frame(page)
+        bottom.pack(fill='x', pady=(14, 0))
+        ttk.Label(bottom, textvariable=self.status, style='Muted.TLabel', wraplength=590).pack(side='left')
+        ttk.Button(bottom, text='Open output folder ↗', command=self.open_output).pack(side='right')
         self.progress = ttk.Progressbar(page, mode='indeterminate')
-        self.progress.pack(fill='x', pady=(14, 8))
-        ttk.Label(page, textvariable=self.status, style='Muted.TLabel').pack(anchor='w')
+        self.progress.pack(fill='x', pady=(10, 0))
+        self.draw_charts()
+
+    def draw_charts(self):
+        if not hasattr(self, 'bar_canvas') or not hasattr(self, 'reducer_canvas'):
+            return
+        bar, reducer = self.bar_canvas, self.reducer_canvas
+        for canvas in (bar, reducer):
+            canvas.delete('all')
+        width, height = max(bar.winfo_width(), 280), max(bar.winfo_height(), 220)
+        bar.create_text(22, 25, text='Most frequent words', anchor='w', fill=TEXT, font=('Segoe UI', 13, 'bold'))
+        bar.create_text(22, 49, text='Top 8 words · count across all input files', anchor='w', fill=MUTED, font=('Segoe UI', 9))
+        reducer.create_text(22, 25, text='Reducer distribution', anchor='w', fill=TEXT, font=('Segoe UI', 13, 'bold'))
+        reducer.create_text(22, 49, text='Word occurrences assigned to each reducer', anchor='w', fill=MUTED, font=('Segoe UI', 9))
+        if not self.counts:
+            bar.create_text(width/2, height/2, text='No words found in this run' if self.completed_output else 'Your word insights will appear here', fill=MUTED, font=('Segoe UI', 11))
+            reducer.create_text(22, 105, text='No words to distribute' if self.completed_output else 'No run yet', anchor='w', fill=MUTED, font=('Segoe UI', 11))
+            return
+        items = sorted(self.counts.items(), key=lambda x: (-x[1], x[0]))[:8]
+        row = min(36, max(18, (height-90)/max(1, len(items))))
+        maximum = max(c for _, c in items)
+        for index, (word, count) in enumerate(items):
+            y = 82 + index*row
+            bar.create_text(22, y, text=word[:16], anchor='w', fill=TEXT, font=('Segoe UI', 10))
+            left, right = 140, width-45
+            bar.create_rectangle(left, y-6, right, y+6, fill='#f0edfc', outline='')
+            bar.create_rectangle(left, y-6, left+(right-left)*count/maximum, y+6, fill=ACCENT if index==0 else '#b4a9f5', outline='')
+            bar.create_text(width-18, y, text=str(count), anchor='e', fill=TEXT, font=('Segoe UI', 10, 'bold'))
+        rw = max(reducer.winfo_width(), 250)
+        total = sum(self.counts.values())
+        for number, color in [(0, ACCENT), (1, '#26a69a')]:
+            count = sum(c for w, c in self.counts.items() if partition(w)==number)
+            y = 92+number*100
+            reducer.create_text(22, y, text=f'Reducer {number}', anchor='w', fill=TEXT, font=('Segoe UI', 11, 'bold'))
+            reducer.create_text(rw-22, y, text=f'{count:,} words', anchor='e', fill=color, font=('Segoe UI', 11, 'bold'))
+            reducer.create_rectangle(22, y+20, rw-22, y+30, fill='#edf0f7', outline='')
+            reducer.create_rectangle(22, y+20, 22+(rw-44)*count/total, y+30, fill=color, outline='')
+            reducer.create_text(22, y+49, text=f'{count/total:.1%} of all occurrences', anchor='w', fill=MUTED, font=('Segoe UI', 9))
 
     @staticmethod
     def table(parent, columns):
@@ -150,6 +236,8 @@ class Dashboard(tk.Tk):
             tree.column(key, width=width, minwidth=70, anchor='w')
         scroll = ttk.Scrollbar(frame, orient='vertical', command=tree.yview)
         tree.configure(yscrollcommand=scroll.set)
+        tree.tag_configure('even', background='#ffffff')
+        tree.tag_configure('odd', background='#f7f8fc')
         tree.pack(side='left', fill='both', expand=True)
         scroll.pack(side='right', fill='y')
         return tree
@@ -224,6 +312,7 @@ class Dashboard(tk.Tk):
             for variable, key in zip(self.stats, ['splits', 'total_words', 'unique_words', 'reducers']):
                 variable.set(f'{report[key]:,}')
             self.refresh_results()
+            self.draw_charts()
             self.traces.delete(*self.traces.get_children())
             traces = report['mapper_traces']
             origin = min((t['started'] for t in traces), default=0)
@@ -251,8 +340,8 @@ class Dashboard(tk.Tk):
         items = [(w, c) for w, c in self.counts.items() if query in w and
                  (selected == 'All reducers' or partition(w) == int(selected[-1]))]
         items.sort(key=(lambda pair: (-pair[1], pair[0])) if self.order.get().startswith('Count') else lambda pair: pair[0])
-        for word, count in items:
-            self.words.insert('', 'end', values=(word, count, f'Reducer {partition(word)}'))
+        for index, (word, count) in enumerate(items):
+            self.words.insert('', 'end', values=(word, count, f'Reducer {partition(word)}'), tags=('even' if index % 2 == 0 else 'odd',))
 
     def export(self):
         if not self.counts:
@@ -288,4 +377,10 @@ class Dashboard(tk.Tk):
 
 
 if __name__ == '__main__':
+    if sys.platform == 'win32':
+        try:
+            import ctypes
+            ctypes.windll.shcore.SetProcessDpiAwareness(1)
+        except (AttributeError, OSError):
+            pass
     Dashboard().mainloop()

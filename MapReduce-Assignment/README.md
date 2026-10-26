@@ -87,7 +87,6 @@ See `output/validation.json` for all 40 differences and `output/tests.txt` for t
 - `output/execution.json`: concurrency and execution evidence.
 - `output/validation.json`: independent validation and expected-result differences.
 - `output/tests.txt`: captured test run.
-- `EXPLANATION.md`: Egyptian Arabic and English study guide.
 - `.gitignore`: excludes Python bytecode.
 
 ## Conclusion

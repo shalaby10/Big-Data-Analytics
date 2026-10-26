@@ -14,4 +14,4 @@
 
 ## Completed Assignment
 
-See [MapReduce Assignment](MapReduce-Assignment/README.md) for the implementation, execution results, tests, and bilingual explanation.
+See [MapReduce Assignment](MapReduce-Assignment/README.md) for the implementation, execution results, and tests.

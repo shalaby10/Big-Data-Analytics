@@ -1,0 +1,219 @@
+{
+  "independent_reference_matches": true,
+  "total_words": 235,
+  "unique_words": 182,
+  "professor_expected_matches": false,
+  "duplicate_expected_keys": {
+    "reduce": [
+      2,
+      1
+    ]
+  },
+  "differences": {
+    "a": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "an": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "analysis": {
+      "actual": 2,
+      "supplied_entries": []
+    },
+    "balanced": {
+      "actual": 0,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "before": {
+      "actual": 2,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "cases": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "combiner": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "combiners": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "data": {
+      "actual": 2,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "files": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "for": {
+      "actual": 4,
+      "supplied_entries": [
+        3
+      ]
+    },
+    "from": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "handling": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "helps": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "improve": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "in": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "include": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "includes": {
+      "actual": 2,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "index": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "map": {
+      "actual": 2,
+      "supplied_entries": [
+        3
+      ]
+    },
+    "of": {
+      "actual": 2,
+      "supplied_entries": [
+        3
+      ]
+    },
+    "on": {
+      "actual": 0,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "partial": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "practice": {
+      "actual": 2,
+      "supplied_entries": [
+        1
+      ]
+    },
+    "process": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "processing": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "reduce": {
+      "actual": 2,
+      "supplied_entries": [
+        2,
+        1
+      ]
+    },
+    "reducer": {
+      "actual": 3,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "reducers": {
+      "actual": 1,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "requires": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "shuffled": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "test": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "that": {
+      "actual": 2,
+      "supplied_entries": [
+        3
+      ]
+    },
+    "their": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "this": {
+      "actual": 2,
+      "supplied_entries": [
+        4
+      ]
+    },
+    "to": {
+      "actual": 1,
+      "supplied_entries": [
+        4
+      ]
+    },
+    "value": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "values": {
+      "actual": 1,
+      "supplied_entries": []
+    },
+    "with": {
+      "actual": 3,
+      "supplied_entries": [
+        2
+      ]
+    },
+    "word": {
+      "actual": 0,
+      "supplied_entries": [
+        1
+      ]
+    }
+  }
+}

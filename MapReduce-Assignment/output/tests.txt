@@ -1,0 +1,16 @@
+test_concurrent_scheduling (test_mapreduce.MapReduceTests.test_concurrent_scheduling) ... ok
+test_deterministic_partition_across_interpreters (test_mapreduce.MapReduceTests.test_deterministic_partition_across_interpreters) ... ok
+test_duplicate_expected_key_rejected (test_mapreduce.MapReduceTests.test_duplicate_expected_key_rejected) ... ok
+test_empty_files (test_mapreduce.MapReduceTests.test_empty_files) ... ok
+test_empty_folder (test_mapreduce.MapReduceTests.test_empty_folder) ... ok
+test_expected_output_excluded (test_mapreduce.MapReduceTests.test_expected_output_excluded) ... ok
+test_invalid_input (test_mapreduce.MapReduceTests.test_invalid_input) ... ok
+test_multiple_files_repeated_words_case_and_empty (test_mapreduce.MapReduceTests.test_multiple_files_repeated_words_case_and_empty) ... ok
+test_professor_dataset (test_mapreduce.MapReduceTests.test_professor_dataset) ... ok
+test_repeat_run_outputs_identical (test_mapreduce.MapReduceTests.test_repeat_run_outputs_identical) ... ok
+test_tokenization (test_mapreduce.MapReduceTests.test_tokenization) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.048s
+
+OK

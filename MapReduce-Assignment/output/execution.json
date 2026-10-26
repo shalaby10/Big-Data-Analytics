@@ -1,0 +1,55 @@
+{
+  "splits": 5,
+  "reducers": 2,
+  "total_words": 235,
+  "unique_words": 182,
+  "demonstration": true,
+  "all_tasks_started_before_first_map": true,
+  "mapper_traces": [
+    {
+      "split": "book_01.txt",
+      "thread": "mapper_0",
+      "started": 277.097270269,
+      "map_started": 277.098015913,
+      "finished": 277.098951234,
+      "tokens": 49,
+      "combined_pairs": 43
+    },
+    {
+      "split": "book_02.txt",
+      "thread": "mapper_1",
+      "started": 277.097458798,
+      "map_started": 277.098059849,
+      "finished": 277.098860386,
+      "tokens": 48,
+      "combined_pairs": 40
+    },
+    {
+      "split": "book_03.txt",
+      "thread": "mapper_2",
+      "started": 277.097617272,
+      "map_started": 277.09843814,
+      "finished": 277.099257435,
+      "tokens": 45,
+      "combined_pairs": 44
+    },
+    {
+      "split": "book_04.txt",
+      "thread": "mapper_3",
+      "started": 277.097759802,
+      "map_started": 277.098194968,
+      "finished": 277.099397151,
+      "tokens": 46,
+      "combined_pairs": 44
+    },
+    {
+      "split": "book_05.txt",
+      "thread": "mapper_4",
+      "started": 277.097897164,
+      "map_started": 277.097941881,
+      "finished": 277.098679263,
+      "tokens": 47,
+      "combined_pairs": 44
+    }
+  ]
+}
